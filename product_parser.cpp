@@ -130,8 +130,15 @@ std::string ProductBookParser::categoryID()
  */
 Product* ProductBookParser::makeProduct()
 {
+    //we want to return a pointer to a product obj
+    //specifically "book"
+    //by this point when calling makeProduct, parser Obj should know name, price, qty, isbn, and author
 
+    //declare obj book 
 
+    Product* book = new Book(categoryID(), prodName_, price_, qty_, isbn_, author_);
+
+    return book;
 }
 
 
@@ -186,8 +193,9 @@ std::string ProductClothingParser::categoryID()
 Product* ProductClothingParser::makeProduct()
 {
 
+    Product* clothing = new Clothing(categoryID(), prodName_, price_, qty_, size_, brand_);
 
-
+    return clothing;
 }
 
 
@@ -246,5 +254,8 @@ std::string ProductMovieParser::categoryID()
 Product* ProductMovieParser::makeProduct()
 {
 
+    Product* movie = new Movie(categoryID(), prodName_, price_, qty_, genre_, rating_);
+
+    return movie;
 
 }
