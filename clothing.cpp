@@ -1,5 +1,5 @@
 #include "clothing.h"
-#include "hw2Util.h"
+#include "util.h"
 #include <set>
 
 /*
@@ -27,10 +27,12 @@ Movie: the movie’s genre should be a searchable keyword
 
 */
 // Product(const std::string category, const std::string name, double price, int qty);
-Clothing::Clothing(const std::string category, const std::string name, double price, int qty, std::string size, std::string brand):Product(category, name, price, qty) 
+Clothing::Clothing(const std::string category, const std::string name, double price, int qty, std::string size, std::string brand): Product(category, name, price, qty) 
 {
+    
     size_ = size;
     brand_ = brand;
+    // convToLower(brand_);
 
 }
 
@@ -39,13 +41,14 @@ Clothing::Clothing(const std::string category, const std::string name, double pr
     //Returns the appropriate keywords that this product should be associated with
 std::set<std::string> Clothing::keywords() const {
     //declare a set, we'll use the one returned by parseStringToWords() with the product name as an arg
-    //break down the title into key words
-    std::set<std::string> searchTerms = parseStringToWords(getName());
+    //break down the title into key words case insensitive
+    std::set<std::string> searchTerms = parseStringToWords(convToLower(getName()));
 
 
     //insert extra data (brand) into the key word set
-    //BRANDS CAN INCLUDE PUNCTUATION, changed implementation
-    std::set<std::string> brandKeywords = parseStringToWords(brand_);
+    //BRANDS CAN INCLUDE PUNCTUATION, changed implementation, and to lowercase for case insensitive search
+    std::string brandLowerCase = convToLower(brand_);
+    std::set<std::string> brandKeywords = parseStringToWords(brandLowerCase);
     std::set<std::string>::iterator t1;
 
     for(t1 = brandKeywords.begin(); t1 != brandKeywords.end(); ++t1){
@@ -58,21 +61,28 @@ std::set<std::string> Clothing::keywords() const {
 
         // return name, price, quantity, categoryy, size, brand
 std::string Clothing::displayString() const{
-        //declare a new set
-    std::set<std::string> searchTerms = this->keywords();
-        //declare an iterator for a set
-    std::set<std::string>::iterator t1;
-        //declare string to be returned
+    /*
+    <name>
+    Size: <size> Brand: <brand>
+    <price> <quantity> left.
+    
+    */
     std::string retString;
 
+    retString.append(getName());
+    retString.push_back('\n');
+    retString.append("Size: ");
+    retString.append(getSize());
+    retString.push_back(' ');
+    retString.append("Brand: ");
+    retString.append(getBrand());
+    retString.push_back('\n');
+    retString.append(std::to_string(getPrice()));
+    retString.push_back(' ');
+    retString.append(std::to_string(getQty()));
+    retString.push_back(' ');
+    retString.append("left.");
 
-        //use iterator to iterate thru set of keywords found by keywords()
-    for(std::set<std::string>::iterator t1 = searchTerms.begin(); t1 != searchTerms.end(); ++t1){
-        //for each term in the set, append keyWord to string
-        retString.append(*t1);
-        retString.push_back(' ');
-
-    }
 
     return retString;
 }
@@ -84,7 +94,15 @@ void Clothing::dump(std::ostream& os) const{
         << getPrice() << "\n" 
         << getQty() << "\n"
         << size_ << "\n"
-        << brand_ << "\n" << std::endl;  
+        << brand_ << "\n"; 
 
+}
+
+std::string Clothing::getSize() const{
+    return size_;
+}
+
+std::string Clothing::getBrand() const{
+    return brand_;
 }
 

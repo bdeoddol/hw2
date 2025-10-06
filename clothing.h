@@ -26,6 +26,9 @@ class Clothing : public Product
         // Outputs the product info in the database format
         void dump(std::ostream& os) const;
 
+        std::string getSize() const;
+        std::string getBrand() const;
+
     private:
     std::string size_;
     std::string brand_;

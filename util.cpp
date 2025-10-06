@@ -34,6 +34,7 @@ std::set<std::string> parseStringToWords(string rawWords)
                     //if punc found, check if built keyword is >=2 chars, if true, insert into set, clear string to build the next portion of keyWord.
                     //if not found, keep building keyword. 
                     if(buildWord.size() >= 2){
+                        convToLower(buildWord);
                         subStrings.insert(buildWord);
                         buildWord.clear();
                     }
@@ -49,11 +50,14 @@ std::set<std::string> parseStringToWords(string rawWords)
             }
 
             if(buildWord.size() >= 2){
-                //if no punc found, or reach end of keyWord without punc. check if the curr built word >=2, insert if true
+                //if no punc found, or reach end of keyWord without punc. check if the curr built word >=2, insert if 
+                convToLower(buildWord);
                 subStrings.insert(buildWord);
             }
 
         }
+        //every iteration we wipe our workspace buildword to build the next one
+        buildWord.clear();
     }
 
     return subStrings;

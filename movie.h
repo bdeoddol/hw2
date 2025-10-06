@@ -26,6 +26,10 @@ class Movie : public Product
         // Outputs the product info in the database format
         void dump(std::ostream& os) const;
 
+        std::string getRating() const;
+        std::string getGenre() const;
+
+
     private:
     std::string rating_;
     std::string genre_;

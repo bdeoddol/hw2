@@ -1,6 +1,7 @@
 #include "book.h"
-#include "hw2Util.h"
+#include "util.h"
 #include <set>
+#include <string>
 
 /*
     a product has a
@@ -31,7 +32,7 @@ Book::Book(const std::string category, const std::string name, double price, int
 {
     ISBN_ = ISBN;
     author_ = Author;
-
+    // convToLower(author_);
 }
 
 
@@ -39,13 +40,21 @@ Book::Book(const std::string category, const std::string name, double price, int
     //Returns the appropriate keywords that this product should be associated with
 std::set<std::string> Book::keywords() const {
     //declare a set, we'll use the one returned by parseStringToWords() with the product name as an arg
-    //break down the title into key words
-    std::set<std::string> searchTerms = parseStringToWords(getName());
+    //break down the title into key words, lower case for case insensitive search
+    std::set<std::string> searchTerms = parseStringToWords(convToLower(getName()));
 
 
     //insert extra data (ISBN, Author) into the key word set
     searchTerms.insert(ISBN_);
-    searchTerms.insert(author_);
+    //even authors can be made up of multiple terms as well
+    std::string authorlowerCase = convToLower(author_);
+    std::set<std::string> authorKeywords = parseStringToWords(authorlowerCase);
+    std::set<std::string>::iterator t1;
+
+    for(t1 = authorKeywords.begin(); t1 != authorKeywords.end(); ++t1){
+        searchTerms.insert(*t1);
+    }
+
 
     //return the set
 
@@ -54,21 +63,28 @@ std::set<std::string> Book::keywords() const {
 
         // return name, price, quantity, categoryy, ISBN, Author
 std::string Book::displayString() const{
-        //declare a new set
-    std::set<std::string> searchTerms = this->keywords();
-        //declare an iterator for a set
-    std::set<std::string>::iterator t1;
-        //declare string to be returned
+    /*
+    <name>
+    Author: <author> ISBN: <isbn>
+    <price> <quantity> left.
+    
+    */
     std::string retString;
 
+    retString.append(getName());
+    retString.push_back('\n');
+    retString.append("Author: ");
+    retString.append(getAuthor());
+    retString.push_back(' ');
+    retString.append("ISBN: ");
+    retString.append(getISBN());
+    retString.push_back('\n');
+    retString.append(std::to_string(getPrice()));
+    retString.push_back(' ');
+    retString.append(std::to_string(getQty()));
+    retString.push_back(' ');
+    retString.append("left.");
 
-        //use iterator to iterate thru set of keywords found by keywords()
-    for(std::set<std::string>::iterator t1 = searchTerms.begin(); t1 != searchTerms.end(); ++t1){
-        //for each term in the set, append keyWord to string
-        retString.append(*t1);
-        retString.push_back(' ');
-
-    }
 
     return retString;
 }
@@ -80,7 +96,14 @@ void Book::dump(std::ostream& os) const{
         << getPrice() << "\n" 
         << getQty() << "\n"
         << ISBN_ << "\n"
-        << author_ << "\n" << std::endl;  
+        << author_ << "\n";
 
 }
 
+std::string Book::getISBN() const{
+    return ISBN_;
+}
+
+std::string Book::getAuthor() const{
+    return author_;
+}

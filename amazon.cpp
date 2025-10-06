@@ -5,10 +5,12 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+
 #include "product.h"
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "datastore.h"
 
 using namespace std;
 struct ProdNameSorter {
@@ -29,7 +31,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -100,9 +102,42 @@ int main(int argc, char* argv[])
                 done = true;
             }
 	    /* Add support for other commands here */
+            else if ( cmd == "ADD") {
+                //hits should be a vector of product pointers from lastknown search
+                //ADD username search_hit_number
+                //we add a product from index of search vec to the user's cart
+                string username;
+                int index;
+                if(ss >> username && ss >> index){
+                    ds.addtoUsersCart(username, hits, index);
+                }
+                else{
+                    cout << "Invalid request" << endl;
+                }
+            }
+            else if ( cmd == "VIEWCART") {
+                //VIEWCART username
+                //dump the contents of a user's cart provided their username
+                string username;
+                if(!(ss >> username)){
+                    //invalid username
+                    cout << "Invalid username" << endl;
+                }
+                else{
+                    ds.dumpUserCart(username, std::cout);
+                }
+            }
+            else if(cmd == "BUYCART"){
+                string username;
+                if(!(ss>>username)){
+                    cout << "Invalid username" << endl;
+                }
+                else{
+                    ds.buyUserCart(username);
+                }
 
-
-
+            }
+//---------------------
 
             else {
                 cout << "Unknown command" << endl;

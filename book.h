@@ -27,6 +27,9 @@ class Book : public Product
         // Outputs the product info in the database format
         void dump(std::ostream& os) const;
 
+        std::string getISBN() const;
+        std::string getAuthor() const;
+
     private:
     std::string ISBN_;
     std::string author_;
